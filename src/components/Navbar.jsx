@@ -4,16 +4,16 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
-        <a class="navbar-brand" href="/">
+        <Link class="navbar-brand" to="/">
           <img
-            src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg"
-            alt=""
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVbOv-GM-P2Leun5S_6scfxcU7t3yjOT68Cg&usqp=CAU"
+            alt="brand Logo"
             width="30"
             height="24"
             class="d-inline-block align-text-top"
           />
-          Bootstrap
-        </a>
+          News App
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -27,7 +27,7 @@ export default function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {false ? (
+            {true ? (
               <>
                 <li className="nav-item">
                   <Link className="nav-link" aria-current="page" to={"/"}>
@@ -47,22 +47,18 @@ export default function Navbar() {
             ) : null}
           </ul>
 
-          {false ? (
+          {true ? (
             <button className="btn btn-outline-danger" type="submit">
               Log out
             </button>
           ) : (
             <>
-              <button
-                className="btn btn-primary"
-                type="submit"
-                style={{ marginRight: "10px" }}
-              >
+              <Link className="btn btn-outline-primary me-2" to={"/login"}>
                 Login
-              </button>
-              <button className="btn btn-warning" type="submit">
+              </Link>
+              <Link className="btn btn-outline-secondary" to={"/register"}>
                 Register
-              </button>
+              </Link>
             </>
           )}
         </div>
