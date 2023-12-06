@@ -1,16 +1,19 @@
 import { Link } from "react-router-dom";
+import { logout } from "../utils/authServices";
 
-export default function Navbar() {
+export default function Navbar({ isUserHaveSessionCookie }) {
+  console.log("isUserHaveSessionCookie", isUserHaveSessionCookie);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
-        <Link class="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVbOv-GM-P2Leun5S_6scfxcU7t3yjOT68Cg&usqp=CAU"
             alt="brand Logo"
             width="30"
             height="24"
-            class="d-inline-block align-text-top"
+            className="d-inline-block align-text-top"
           />
           News App
         </Link>
@@ -27,7 +30,7 @@ export default function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {true ? (
+            {isUserHaveSessionCookie ? (
               <>
                 <li className="nav-item">
                   <Link className="nav-link" aria-current="page" to={"/"}>
@@ -47,8 +50,12 @@ export default function Navbar() {
             ) : null}
           </ul>
 
-          {true ? (
-            <button className="btn btn-outline-danger" type="submit">
+          {isUserHaveSessionCookie ? (
+            <button
+              className="btn btn-outline-danger"
+              type="submit"
+              onClick={logout}
+            >
               Log out
             </button>
           ) : (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   //states
@@ -7,11 +8,38 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newUser, setNewUser] = useState(null);
+  const [errorText, setErrorText] = useState("");
+  const [successText, setSuccessText] = useState(""); //for async
+
+  const navigate = useNavigate();
 
   //side effects
   useEffect(() => {
-    if (newUser) {
+    try {
       console.log(newUser);
+      const users = JSON.parse(localStorage.getItem("users"));
+      if (newUser && !users) {
+        localStorage.setItem("users", JSON.stringify([newUser]));
+        setSuccessText("User created successfully");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      } else if (newUser && users) {
+        const existUser = users.filter((user) => user.email === newUser.email);
+        if (!existUser.length) {
+          users.push(newUser);
+          localStorage.setItem("users", JSON.stringify(users));
+          setSuccessText("User created successfully");
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
+        } else {
+          throw new Error("User with this email already exists");
+        }
+      }
+    } catch (error) {
+      setErrorText(error.message);
+      console.log(error.message);
     }
   }, [newUser]);
 
@@ -20,6 +48,7 @@ export default function Register() {
     console.log(name, email, password, confirmPassword);
     if (password !== confirmPassword) {
       window.alert("passwords do not match");
+      return;
     }
     setNewUser({
       name,
@@ -30,6 +59,8 @@ export default function Register() {
   return (
     <div className="register">
       <form className="row g-3" onSubmit={submitHandler}>
+        <div className="mx-auto text-center text-danger">{errorText}</div>
+        <div className="mx-auto text-center text-success">{successText}</div>
         <div className="col-md-6">
           <label htmlFor="inputName" className="form-label">
             Username
@@ -52,7 +83,7 @@ export default function Register() {
             className="form-control"
             id="inputEmail4"
             placeholder="Enter your email"
-            onChage={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>

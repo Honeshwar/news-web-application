@@ -1,6 +1,12 @@
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  useNavigate
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { Home, Favorites, Login, Register } from "./pages";
+import { Home, Favorites, Details, Login, Register } from "./pages";
+import {isAuthenticated} from "./utils/authServices"
 
 const NotFound = () => {
   return (
@@ -9,23 +15,32 @@ const NotFound = () => {
     </div>
   );
 };
-const Details = () => {
-  return (
-    <div>
-      <h1>Details</h1>
-    </div>
-  );
-};
 
 function App() {
+  console.log("isAuthenticated",isAuthenticated())
   // create a layout
   const Layout = () => {
     return (
       <>
-        <Navbar />
+        <Navbar isUserHaveSessionCookie={isAuthenticated()} />
         <Outlet />
       </>
     );
+  };
+  //create protected route components
+  const ProtectedRoute1 = ({ children }) => {
+    const navigate = useNavigate();
+    if(!isAuthenticated()){
+     return  navigate("/login")
+    }
+    return children;
+  };
+  const ProtectedRoute2 = ({ children }) => {
+    const navigate = useNavigate();
+    if(isAuthenticated()){
+      return navigate("/")
+    }
+    return children;
   };
 
   //create a router
@@ -36,23 +51,44 @@ function App() {
       children: [
         {
           path: "/",
-          element: <Home />,
+          element: (
+            <ProtectedRoute1>
+              <Home />
+            </ProtectedRoute1>
+          ),
         },
         {
           path: "/favorites",
-          element: <Favorites />,
+          element: (
+            <ProtectedRoute1>
+              {" "}
+              <Favorites />
+            </ProtectedRoute1>
+          ),
         },
         {
           path: "/details/:id",
-          element: <Details />,
+          element: (
+            <ProtectedRoute1>
+              <Details />
+            </ProtectedRoute1>
+          ),
         },
         {
           path: "/register",
-          element: <Register />,
+          element: (
+            <ProtectedRoute2>
+              <Register />
+            </ProtectedRoute2>
+          ),
         },
         {
           path: "/login",
-          element: <Login />,
+          element: (
+            <ProtectedRoute2>
+              <Login/>
+            </ProtectedRoute2>
+          ),
         },
       ],
     },
